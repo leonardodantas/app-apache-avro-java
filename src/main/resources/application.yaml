@@ -1,0 +1,14 @@
+application:
+  swagger:
+    title: @name@
+    description: @description@
+    version: @version@
+  mvc:
+    pathmatch.matching-strategy: ant_path_matcher
+
+kafka:
+  bootstrapAddress: localhost:9092
+  schemaRegistry: http://localhost:8081
+  topics:
+    send.product.avro: sendProductAvro
+    send.product.object.mapper: sendProductObjectMapper

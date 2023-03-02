@@ -1,0 +1,99 @@
+{
+  "type": "record",
+  "name": "ProductSchema",
+  "namespace": "com.application.java.kafka.schemas",
+  "fields": [
+    {
+      "name": "id",
+      "type": "String"
+    },
+    {
+      "name": "code",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "price",
+      "type": "bytes",
+      "logicalType": "decimal",
+      "precision": 4,
+      "scale": 2
+    },
+    {
+      "name": "categories",
+      "type": {
+        "type": "record",
+        "name": "CategoriesSchema",
+        "fields": [
+          {
+            "name": "values",
+            "type": {
+              "type": "array",
+              "items": "string"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "promotionActive",
+      "type": "boolean"
+    },
+    {
+      "name": "promotion",
+      "type": {
+        "type": "record",
+        "name": "PromotionSchema",
+        "fields": [
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "promotionalPrice",
+            "type": "bytes",
+            "logicalType": "decimal",
+            "precision": 4,
+            "scale": 2
+          },
+          {
+            "name": "dayAndHours",
+            "type": {
+              "type": "array",
+              "items": {
+                "name": "DayAndHoursSchema",
+                "type": "record",
+                "fields": [
+                  {
+                    "name": "days",
+                    "type": {
+                      "type": "record",
+                      "name": "DaysSchema",
+                      "fields": [
+                        {
+                          "name": "day",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "startTime",
+                    "type": "long"
+                  },
+                  {
+                    "name": "endTime",
+                    "type": "long"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
