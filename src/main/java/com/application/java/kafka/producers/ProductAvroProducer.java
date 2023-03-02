@@ -30,8 +30,11 @@ public class ProductAvroProducer {
     }
 
     public void execute(final Product product) {
-        final var productSchema = converter.convert(product);
-        final var record = new ProducerRecord<>(topic, product.getCode(), productSchema);
+
+        log.info("Create ProduceRecord:");
+        log.info("TOPIC: {}", topic);
+        log.info("KEY: {}", product.getCode());
+        final var record = new ProducerRecord<>(topic, product.getCode(), converter.convert(product));
 
         final var future = kafkaTemplateAvro.send(record);
 
@@ -45,6 +48,7 @@ public class ProductAvroProducer {
             public void onSuccess(final SendResult<String, ProductSchema> result) {
                 log.info("Send with Apache Avro");
                 log.info("OFFSET: {}, PARTITION: {}", result.getRecordMetadata().offset(), result.getRecordMetadata().partition());
+                log.info("Serialized Value Size = {}", result.getRecordMetadata().serializedValueSize());
             }
         });
 

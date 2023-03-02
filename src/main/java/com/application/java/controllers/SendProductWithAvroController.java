@@ -22,6 +22,8 @@ public class SendProductWithAvroController {
     @PostMapping(path = "avro")
     @ResponseStatus(HttpStatus.OK)
     public void executeAvro(){
+        log.info("-----------------------------------------");
+        log.info("Initialized send product with apache avro");
         sendProduct.withAvro();
     }
 
@@ -29,6 +31,8 @@ public class SendProductWithAvroController {
     @PostMapping(path = "object/mapper")
     @ResponseStatus(HttpStatus.OK)
     public void executeString(){
+        log.info("-----------------------------------------");
+        log.info("Initialized send product with object mapper");
         sendProduct.withObjectMapper();
     }
 }

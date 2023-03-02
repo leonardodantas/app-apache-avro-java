@@ -32,5 +32,6 @@ public class ProductAvroConsumer {
         log.info("Received message with key {}", key);
         final var product = converter.convert(message.value());
         log.info("{}", product);
+        log.info("-----------------------------------------\n");
     }
 }

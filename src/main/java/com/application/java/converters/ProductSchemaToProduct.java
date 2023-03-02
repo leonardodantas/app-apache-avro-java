@@ -11,25 +11,17 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 @Component
 public class ProductSchemaToProduct implements Converter<ProductSchema, Product> {
 
     @Override
     public Product convert(final ProductSchema productSchema) {
-        return Product.builder(productSchema.getName().toString(), productSchema.getName().toString(), getCategories(productSchema.getCategories()), BigDecimal.valueOf(productSchema.getPrice().get()))
-                .id(productSchema.getId().toString())
-                .promotion(getPromotion(productSchema.getPromotion()))
-                .build();
+        return Product.builder(productSchema.getName().toString(), productSchema.getName().toString(), getCategories(productSchema.getCategories()), BigDecimal.valueOf(productSchema.getPrice().get())).id(productSchema.getId().toString()).promotion(getPromotion(productSchema.getPromotion())).build();
     }
 
     private Promotion getPromotion(final PromotionSchema promotion) {
-        return Promotion.of(
-                promotion.getDescription().toString(),
-                BigDecimal.valueOf(promotion.getPromotionalPrice().get()),
-                new ArrayList<>()
-        );
+        return Promotion.of(promotion.getDescription().toString(), BigDecimal.valueOf(promotion.getPromotionalPrice().get()), new ArrayList<>());
     }
 
     private Categories getCategories(final CategoriesSchema categories) {

@@ -22,20 +22,13 @@ public class SendProduct {
     }
 
     public void withAvro() {
-        final Product product = getProduct();
+        final var product = getProduct();
         productAvroProducer.execute(product);
     }
 
     public void withObjectMapper() {
-        final Product product = getProduct();
+        final var product = getProduct();
         productObjectMapperProducer.execute(product);
     }
 
-    private Product getProduct() {
-        return Product.builder(
-                        string(), code(), categories(), bigDecimal())
-                .id(code())
-                .promotion(Promotion.of(string(), bigDecimal(), new ArrayList<>()))
-                .build();
-    }
 }

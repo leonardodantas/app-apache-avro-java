@@ -1,8 +1,7 @@
 package com.application.java.kafka.producers;
 
+import com.application.java.converters.Converter;
 import com.application.java.domains.Product;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,21 +14,25 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 @Component
 public class ProductObjectMapperProducer {
 
-    private final ObjectMapper objectMapper;
+    private final Converter converter;
     private final KafkaTemplate<String, String> kafkaTemplateObjectMapper;
     private final String topic;
 
     public ProductObjectMapperProducer(
-            ObjectMapper objectMapper, final KafkaTemplate<String, String> kafkaTemplateObjectMapper,
+            final Converter converter, final KafkaTemplate<String, String> kafkaTemplateObjectMapper,
             @Value("${kafka.topics.send.product.object.mapper}") final String topic
     ) {
-        this.objectMapper = objectMapper;
+        this.converter = converter;
         this.kafkaTemplateObjectMapper = kafkaTemplateObjectMapper;
         this.topic = topic;
     }
 
     public void execute(final Product product) {
-        final var record = new ProducerRecord<>(topic, product.getCode(), getBodyAsJson(product));
+
+        log.info("Create ProduceRecord:");
+        log.info("TOPIC: {}", topic);
+        log.info("KEY: {}", product.getCode());
+        final var record = new ProducerRecord<>(topic, product.getCode(), converter.execute(product));
 
         final var future = kafkaTemplateObjectMapper.send(record);
 
@@ -43,16 +46,10 @@ public class ProductObjectMapperProducer {
             public void onSuccess(final SendResult<String, String> result) {
                 log.info("Send with Object Mapper");
                 log.info("OFFSET: {}, PARTITION: {}", result.getRecordMetadata().offset(), result.getRecordMetadata().partition());
+                log.info("Serialized Value Size = {}", result.getRecordMetadata().serializedValueSize());
             }
         });
 
     }
 
-    private String getBodyAsJson(final Product product) {
-        try {
-            return objectMapper.writeValueAsString(product);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

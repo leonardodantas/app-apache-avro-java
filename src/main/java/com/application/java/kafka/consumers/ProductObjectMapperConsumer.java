@@ -1,8 +1,7 @@
 package com.application.java.kafka.consumers;
 
+import com.application.java.converters.Converter;
 import com.application.java.domains.Product;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -14,10 +13,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductObjectMapperConsumer {
 
-    private final ObjectMapper objectMapper;
+    private final Converter converter;
 
-    public ProductObjectMapperConsumer(final ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public ProductObjectMapperConsumer(final Converter converter) {
+        this.converter = converter;
     }
 
     @KafkaListener(
@@ -30,15 +29,9 @@ public class ProductObjectMapperConsumer {
             @Payload final String message
     ) {
         log.info("Received message with key {}", key);
-        final var product = getStringAsProduct(message);
+        final var product = converter.execute(message, Product.class);
         log.info("{}", product);
+        log.info("-----------------------------------------\n");
     }
 
-    private Product getStringAsProduct(final String message) {
-        try {
-            return objectMapper.readValue(message, Product.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

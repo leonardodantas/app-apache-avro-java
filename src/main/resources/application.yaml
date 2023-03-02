@@ -12,3 +12,7 @@ kafka:
   topics:
     send.product.avro: sendProductAvro
     send.product.object.mapper: sendProductObjectMapper
+
+logging:
+  level:
+    root: INFO
