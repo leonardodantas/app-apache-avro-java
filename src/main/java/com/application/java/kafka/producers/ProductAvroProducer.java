@@ -14,7 +14,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Slf4j
 @Component
-public class ProductAvroProducer {
+public class ProductAvroProducer implements IProducer {
 
     private final ProductToProductSchema converter;
     private final KafkaTemplate<String, ProductSchema> kafkaTemplateAvro;
@@ -30,6 +30,7 @@ public class ProductAvroProducer {
         this.topic = topic;
     }
 
+    @Override
     public void execute(final Product product) {
 
         log.info("Create ProduceRecord:");

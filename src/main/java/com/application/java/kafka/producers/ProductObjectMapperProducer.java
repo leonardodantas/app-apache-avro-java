@@ -13,7 +13,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Slf4j
 @Component
-public class ProductObjectMapperProducer {
+public class ProductObjectMapperProducer implements IProducer {
 
     private final Converter converter;
     private final KafkaTemplate<String, String> kafkaTemplateObjectMapper;
@@ -28,6 +28,7 @@ public class ProductObjectMapperProducer {
         this.topic = topic;
     }
 
+    @Override
     public void execute(final Product product) {
 
         log.info("Create ProduceRecord:");
