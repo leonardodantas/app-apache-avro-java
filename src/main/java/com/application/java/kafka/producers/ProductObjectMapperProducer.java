@@ -2,6 +2,7 @@ package com.application.java.kafka.producers;
 
 import com.application.java.converters.Converter;
 import com.application.java.domains.Product;
+import com.application.java.exceptions.ProducerMessageException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +41,7 @@ public class ProductObjectMapperProducer {
             @Override
             public void onFailure(final Throwable ex) {
                 log.error("Error: {}", ex.getMessage());
+                throw new ProducerMessageException("Error producer message with object mapper", ex, ProductObjectMapperProducer.class);
             }
 
             @Override

@@ -2,6 +2,7 @@ package com.application.java.kafka.producers;
 
 import com.application.java.converters.ProductToProductSchema;
 import com.application.java.domains.Product;
+import com.application.java.exceptions.ProducerMessageException;
 import com.application.java.kafka.schemas.ProductSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -42,6 +43,7 @@ public class ProductAvroProducer {
             @Override
             public void onFailure(final Throwable ex) {
                 log.error("Error: {}", ex.getMessage());
+                throw new ProducerMessageException("Error producer message with avro", ex, ProductAvroProducer.class);
             }
 
             @Override
