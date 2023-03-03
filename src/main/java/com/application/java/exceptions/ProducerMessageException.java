@@ -1,11 +1,8 @@
 package com.application.java.exceptions;
 
-import lombok.Getter;
-
 import java.time.LocalDateTime;
 
-@Getter
-public class ProducerMessageException extends RuntimeException {
+public class ProducerMessageException extends RuntimeException implements BaseException {
 
     private Class klass;
     private Throwable exception;
@@ -19,7 +16,28 @@ public class ProducerMessageException extends RuntimeException {
         this.date = LocalDateTime.now();
     }
 
+    @Override
+    public Class getKlass() {
+        return klass;
+    }
+
+    @Override
+    public Throwable getException() {
+        return exception;
+    }
+
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
+
+    @Override
     public String getMessageException() {
         return this.exception.getMessage();
+    }
+
+    @Override
+    public LocalDateTime getDate() {
+        return date;
     }
 }

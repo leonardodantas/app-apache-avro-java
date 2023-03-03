@@ -21,4 +21,10 @@ public class AdviceController {
         final var response = new ErrorResponse(exception.getMessage(), exception.getMessageException(), exception.getDate());
         return ResponseEntity.badRequest().body(response);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handlerException(final Exception exception) {
+        final var response = ErrorResponse.from(exception.getMessage());
+        return ResponseEntity.internalServerError().body(response);
+    }
 }

@@ -1,10 +1,10 @@
 package com.application.java.jsons;
 
-import lombok.Getter;
-
 import java.time.LocalDateTime;
 
-@Getter
 public record ErrorResponse(String message, String messageException, LocalDateTime date) {
 
+    public static ErrorResponse from(final String messageException) {
+        return new ErrorResponse("Internal server error", messageException, LocalDateTime.now());
+    }
 }
