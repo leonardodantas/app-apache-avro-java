@@ -1,23 +1,21 @@
 package com.application.java.kafka.consumers;
 
-import com.application.java.converters.ProductSchemaToProduct;
-import com.application.java.kafka.schemas.ProductSchema;
+import com.application.java.services.ISaveEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.context.ApplicationContext;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 public class ProductAvroConsumer {
 
-    private final ProductSchemaToProduct converter;
+    private final ApplicationContext applicationContext;
 
-    public ProductAvroConsumer(final ProductSchemaToProduct converter) {
-        this.converter = converter;
+    public ProductAvroConsumer(final ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     @KafkaListener(
@@ -26,12 +24,15 @@ public class ProductAvroConsumer {
             containerFactory = "kafkaListenerAvro"
     )
     public void listener(
-            @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) final String key,
-            @Payload final ConsumerRecord<String, ProductSchema> message
-    ) {
-        log.info("Received message with key {}", key);
-        final var product = converter.convert(message.value());
-        log.info("{}", product);
+            ConsumerRecord<String, GenericRecord> record) {
+        log.info("Received message with key {}", record.key());
+        log.info("{}", record.value());
         log.info("-----------------------------------------\n");
+
+        final var path = record.value().getClass().getName().split("\\.");
+        final var bean = path[path.length - 1];
+
+        final var service = applicationContext.getBean(bean, ISaveEntity.class);
+        service.execute(record.value());
     }
 }

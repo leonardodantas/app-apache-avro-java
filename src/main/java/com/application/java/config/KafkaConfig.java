@@ -1,10 +1,12 @@
 package com.application.java.config;
 
+import com.application.java.kafka.schemas.ManufacturerSchema;
 import com.application.java.kafka.schemas.ProductSchema;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -29,8 +31,18 @@ public class KafkaConfig {
     @Value("${kafka.schemaRegistry}")
     private String schemaRegistry;
 
-    @Bean("kafkaTemplateAvro")
-    public KafkaTemplate<String, ProductSchema> kafkaTemplateAvro() {
+    @Bean("productKafkaTemplateAvro")
+    public KafkaTemplate<String, ProductSchema> productKafkaTemplateAvro() {
+        final var properties = new HashMap<String, Object>();
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
+        properties.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
+        return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(properties));
+    }
+
+    @Bean("manufacturerKafkaTemplateAvro")
+    public KafkaTemplate<String, ManufacturerSchema> manufacturerKafkaTemplateAvro() {
         final var properties = new HashMap<String, Object>();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -40,7 +52,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, ProductSchema> kafkaListenerAvro() {
+    public ConcurrentKafkaListenerContainerFactory<String, GenericRecord> kafkaListenerAvro() {
         final var deserializer = new KafkaAvroDeserializer();
 
         final var properties = new HashMap<String, Object>();
@@ -54,7 +66,7 @@ public class KafkaConfig {
                         new StringDeserializer(),
                         deserializer);
 
-        final var factory = new ConcurrentKafkaListenerContainerFactory<String, ProductSchema>();
+        final var factory = new ConcurrentKafkaListenerContainerFactory<String, GenericRecord>();
         factory.setConsumerFactory(defaultKafkaConsumerFactory);
 
         return factory;

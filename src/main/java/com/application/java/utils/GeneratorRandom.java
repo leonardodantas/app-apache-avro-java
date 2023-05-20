@@ -1,6 +1,7 @@
 package com.application.java.utils;
 
 import com.application.java.domains.Categories;
+import com.application.java.domains.Manufacturer;
 import com.application.java.domains.Product;
 import com.application.java.domains.Promotion;
 import lombok.AccessLevel;
@@ -24,6 +25,10 @@ public final class GeneratorRandom {
                 .id(code())
                 .promotion(Promotion.of(string(), bigDecimal(), new ArrayList<>()))
                 .build();
+    }
+
+    public static Manufacturer getManufacturer() {
+        return Manufacturer.of(UUID.randomUUID().toString(), string(), string(), string());
     }
 
     private static String string() {

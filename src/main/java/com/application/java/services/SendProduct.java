@@ -1,23 +1,17 @@
 package com.application.java.services;
 
-import com.application.java.domains.Product;
-import com.application.java.domains.Promotion;
-import com.application.java.kafka.producers.IProducer;
-import com.application.java.kafka.producers.ProductAvroProducer;
-import com.application.java.kafka.producers.ProductObjectMapperProducer;
+import com.application.java.kafka.producers.IProductProducer;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 import static com.application.java.utils.GeneratorRandom.*;
 
 @Service
 public class SendProduct {
 
-    private final IProducer productAvroProducer;
-    private final IProducer productObjectMapperProducer;
+    private final IProductProducer productAvroProducer;
+    private final IProductProducer productObjectMapperProducer;
 
-    public SendProduct(final IProducer productAvroProducer, final IProducer productObjectMapperProducer) {
+    public SendProduct(final IProductProducer productAvroProducer, final IProductProducer productObjectMapperProducer) {
         this.productAvroProducer = productAvroProducer;
         this.productObjectMapperProducer = productObjectMapperProducer;
     }

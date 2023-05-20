@@ -13,7 +13,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Slf4j
 @Component
-public class ProductObjectMapperProducer implements IProducer {
+public class ProductObjectMapperProducer implements IProductProducer {
 
     private final Converter converter;
     private final KafkaTemplate<String, String> kafkaTemplateObjectMapper;

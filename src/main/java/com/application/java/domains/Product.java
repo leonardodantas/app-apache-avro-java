@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @Getter
 @NoArgsConstructor
-public final class Product implements Serializable {
+public final class  Product implements Serializable {
 
     private String id;
     private String code;
